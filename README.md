@@ -53,37 +53,3 @@ Tests del backend: `cd backend && npm test`
 | GET/PATCH/DELETE | `/api/tasks/:id` | Lee, actualiza parcialmente o elimina |
 
 Las rutas de tareas requieren `Authorization: Bearer <token>`.
-
-## Despliegue
-
-Hay dos opciones. La **A** es la más simple.
-
-### Opción A: un solo servicio (Render, Railway, Fly.io)
-
-El backend sirve el frontend compilado.
-
-1. Sube la carpeta `taskflow/` a un repositorio de GitHub.
-2. En Render crea un **Web Service** apuntando al repo y usa:
-   - **Build command:** `cd frontend && npm install && npm run build && cd ../backend && npm install`
-   - **Start command:** `cd backend && npm start`
-3. Variables de entorno:
-   - `NODE_VERSION=22`
-   - `NODE_ENV=production`
-   - `JWT_SECRET=` (un valor largo y aleatorio)
-   - `STATIC_DIR=../frontend/dist`
-   - `DB_PATH=/var/data/taskflow.db`
-4. Añade un **Disk** (volumen persistente) montado en `/var/data`. Sin disco, SQLite se borra en cada despliegue en los planes gratuitos.
-
-> El repositorio incluye `render.yaml` con esta configuración lista para usar como Blueprint.
-
-### Opción B: frontend en Vercel + backend en Render
-
-1. Despliega el backend como en la opción A, pero sin `STATIC_DIR`, y define `CORS_ORIGIN=https://tu-app.vercel.app`.
-2. En Vercel importa la carpeta `frontend/` (preset Vite) y define `VITE_API_URL=https://tu-backend.onrender.com`.
-
-## Ideas para ampliar
-
-- Etiquetas y subtareas
-- Refresh tokens con cookies `httpOnly`
-- Migración a PostgreSQL
-- Tests de componentes con Vitest + Testing Library
