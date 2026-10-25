@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: taskflow
+    runtime: node
+    plan: starter # los discos persistentes requieren un plan de pago
+    buildCommand: cd frontend && npm install && npm run build && cd ../backend && npm install
+    startCommand: cd backend && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: STATIC_DIR
+        value: ../frontend/dist
+      - key: DB_PATH
+        value: /var/data/taskflow.db
+    disk:
+      name: taskflow-data
+      mountPath: /var/data
+      sizeGB: 1
